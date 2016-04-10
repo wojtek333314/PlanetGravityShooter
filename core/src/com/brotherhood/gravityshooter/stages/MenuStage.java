@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.brotherhood.gravityshooter.utils.PhysicsStage;
 import com.brotherhood.gravityshooter.gravity.GravityBody;
+import com.brotherhood.gravityshooter.utils.PhysicsStage;
 
 /**
  * Created by Wojtek on 2016-03-13.
@@ -29,9 +29,7 @@ public class MenuStage extends PhysicsStage {
         super(0, 0, true);
         setDrawDebugLines(true);
 
-        GravityBody planet = new GravityBody(world, W / 4 + 6, H / 2, 2.5f, 8, true);
-        planet.disableKineticProperties();
-        gravityBodies.add(planet);
+
 
         setBackgroundColor(new Color(0, 0, 0, 0));
     }
@@ -88,7 +86,10 @@ public class MenuStage extends PhysicsStage {
         super.act(delta);
         shapeRenderer.setProjectionMatrix(camera.combined);
         for (GravityBody gravityBody : gravityBodies)
+        {
             gravityBody.drawGravityRange(shapeRenderer);
+            gravityBody.onDraw(getBatch());
+        }
     }
 
 

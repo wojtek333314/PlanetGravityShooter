@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.brotherhood.gravityshooter.stages.MenuStage;
+import com.brotherhood.gravityshooter.stages.GameStage;
 
 /**
  * Created by Wojciech Osak on 2015-12-06.
@@ -30,7 +30,7 @@ public class Launcher extends Game implements Screen {
 
     @Override
     public void create() {
-        baseStage = new MenuStage();
+        baseStage = new GameStage();
         setScreen(this);
     }
 
