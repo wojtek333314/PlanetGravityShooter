@@ -32,19 +32,14 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
 
         world.setContactListener(this);
         world.setContactFilter(this);
-        //setDrawDebugLines(true);
 
         gravitySimulator = new GravitySimulator(gravityBodies);
 
         Planet planet = new Planet(world, W / 2, H / 2, PlanetType.GREEN);
-
         gravityBodies.add(planet);
 
         Planet planet2 = new Planet(world, W / 4, H / 3, PlanetType.BLUE);
         gravityBodies.add(planet2);
-
-    //    planet2.getBody().setLinearVelocity(1, .2f);
-     //   planet.getBody().setLinearVelocity(-1, -.2f);
     }
 
     @Override
@@ -58,10 +53,7 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         for (GravityBody gravityBody : gravityBodies)
-        {
-            gravityBody.drawGravityRange(shapeRenderer);
             gravityBody.onDraw(getBatch());
-        }
     }
 
     @Override

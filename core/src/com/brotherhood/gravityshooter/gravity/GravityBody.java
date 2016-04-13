@@ -45,7 +45,7 @@ public class GravityBody {
         CircleShape shape = new CircleShape();
         shape.setRadius(radius);
         fixture = body.createFixture(shape, mass);
-        fixture.setFriction(10);
+        fixture.setFriction(mass);
         shape.dispose();
         body.setUserData(new GravityBodyUserData(this));
     }
@@ -65,15 +65,15 @@ public class GravityBody {
     public void drawGravityRange(ShapeRenderer shapeRenderer) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
-        shapeRenderer.circle(body.getPosition().x, body.getPosition().y, getRadius(),20);
+        shapeRenderer.circle(body.getPosition().x, body.getPosition().y, getRadius(), 20);
         shapeRenderer.end();
     }
 
-    public void onDraw(Batch batch){
+    public void onDraw(Batch batch) {
 
     }
 
-    public void onCollision(GravityBody gravityBody){
+    public void onCollision(GravityBody gravityBody) {
 
     }
 

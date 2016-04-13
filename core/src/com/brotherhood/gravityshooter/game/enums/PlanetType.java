@@ -17,7 +17,7 @@ public enum  PlanetType {
             case YELLOW:
                 return 1;
             case GREEN:
-                return 32.1f ;
+                return 2000 ;
             default:
                 return 1;
         }
@@ -30,7 +30,7 @@ public enum  PlanetType {
             case YELLOW:
                 return 1.5f;
             case GREEN:
-                return 2;
+                return 1;
             default:
                 return 1;
         }

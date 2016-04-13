@@ -23,7 +23,8 @@ public class Planet extends GravityBody {
                 , PlanetType.defineBodyType(planetType));
         this.planetType = planetType;
         sprite = new Sprite(BaseStage.getTextureRegion(PlanetType.definePlanetTexturePath(planetType)));
-        sprite.setSize(getBody().getFixtureList().get(0).getShape().getRadius() * 2, getBody().getFixtureList().get(0).getShape().getRadius() * 2);
+        sprite.setSize(getBody().getFixtureList().get(0).getShape().getRadius() * 2
+                , getBody().getFixtureList().get(0).getShape().getRadius() * 2);
     }
 
     @Override
@@ -44,5 +45,9 @@ public class Planet extends GravityBody {
             getBody().setLinearVelocity(0,0);
             setGravityForceEnabled(false);
         }
+    }
+
+    public PlanetType getPlanetType() {
+        return planetType;
     }
 }
