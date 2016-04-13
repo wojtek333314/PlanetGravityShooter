@@ -13,11 +13,11 @@ public enum  PlanetType {
     public static float definePlanetMass(PlanetType planetType){
         switch (planetType){
             case BLUE:
-                return 3;
+                return 1;
             case YELLOW:
                 return 1;
             case GREEN:
-                return 2000 ;
+                return 2 ;
             default:
                 return 1;
         }
@@ -26,7 +26,7 @@ public enum  PlanetType {
     public static float defineRadius(PlanetType planetType){
         switch (planetType){
             case BLUE:
-                return 2;
+                return .5f;
             case YELLOW:
                 return 1.5f;
             case GREEN:

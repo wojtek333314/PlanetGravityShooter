@@ -1,7 +1,9 @@
 package com.brotherhood.gravityshooter.stages;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactFilter;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -24,6 +26,7 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
     private Array<GravityBody> gravityBodies = new Array<GravityBody>();
     private GravitySimulator gravitySimulator;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private Vector2 touchPosition;
 
     public GameStage() {
         super();
@@ -98,4 +101,29 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
                         && ((GravityBodyUserData) fixB.getBody().getUserData()).getGravityBody().getType() == typeA));
     }
 
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        Vector2 touchUpVector = screenPositionToWorldPosition(screenX,screenY);
+        Vector2 forceVector = screenPositionToWorldPosition(touchUpVector.x - touchPosition.x, touchUpVector.y - touchPosition.y);
+
+        Planet planet = new Planet(world, touchPosition.x , touchPosition.y, PlanetType.BLUE);
+
+      //  planet.getBody().setLinearVelocity(forceVector.x,forceVector.y);
+        gravityBodies.add(planet);
+        return super.touchUp(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        touchPosition = screenPositionToWorldPosition(screenX,screenY);
+        return super.touchDown(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        if (((OrthographicCamera) getCamera()).zoom + amount * .3f > 0)
+            ((OrthographicCamera) getCamera()).zoom += amount * .3f;
+
+        return super.scrolled(amount);
+    }
 }

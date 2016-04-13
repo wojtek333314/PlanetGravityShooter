@@ -42,8 +42,8 @@ public class Planet extends GravityBody {
 
         if(gravityBody.getType()== GravityBodyType.PLANET)
         {
-            getBody().setLinearVelocity(0,0);
-            setGravityForceEnabled(false);
+           // getBody().setLinearVelocity(0,0);
+           // setGravityForceEnabled(false);
         }
     }
 

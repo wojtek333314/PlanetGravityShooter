@@ -12,9 +12,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.brotherhood.gravityshooter.*;
+import com.brotherhood.gravityshooter.Launcher;
 import com.brotherhood.gravityshooter.utils.enums.FontType;
 
 import java.text.DecimalFormat;
@@ -251,7 +253,7 @@ public class BaseStage extends Stage implements Screen, InputProcessor {
     protected void setFPSCounterVisibility(boolean isEnabled) {
         if (isEnabled) {
             if (FPScounterLabel == null) {
-                FPScounterLabel = new LabelActor(getFont(FontType.ROBOTO_REGULAR, 14,Color.WHITE), "");
+                FPScounterLabel = new LabelActor(getFont(FontType.ROBOTO_REGULAR, 14, Color.WHITE), "");
                 addActor(FPScounterLabel);
             }
             FPScounterLabel.setPosition(W - FPScounterLabel.getWidth(), H - FPScounterLabel.getHeight());
@@ -280,7 +282,7 @@ public class BaseStage extends Stage implements Screen, InputProcessor {
 
         if (FPScounterLabel != null) {
             FPScounterLabel.setText(fpsTextFormat.format(1 / delta) + " FPS");
-            FPScounterLabel.setPosition(W - FPScounterLabel.getWidth(), H-FPScounterLabel.getHeight());
+            FPScounterLabel.setPosition(W - FPScounterLabel.getWidth(), H - FPScounterLabel.getHeight());
         }
     }
 
@@ -330,4 +332,22 @@ public class BaseStage extends Stage implements Screen, InputProcessor {
             this.fontSize = fontSize;
         }
     }
+
+    protected Vector2 screenPositionToWorldPosition(float x, float y) {
+        return new Vector2(camera.unproject(new Vector3(x, y, 0)).x, camera.unproject(new Vector3(x, y, 0)).y);
+    }
+
+    protected Vector2 screenPositionToWorldPosition(Vector2 vector) {
+        return screenPositionToWorldPosition(vector.x, vector.y);
+    }
+
+    protected Vector2 worldPositionToScreenPosition(float x, float y) {
+        return new Vector2(camera.project(new Vector3(x, y, 0)).x, camera.project(new Vector3(x, y, 0)).y);
+    }
+
+    protected Vector2 worldPositionToScreenPosition(Vector2 vector) {
+        return worldPositionToScreenPosition(vector.x, vector.y);
+    }
+
+
 }
