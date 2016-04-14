@@ -27,17 +27,24 @@ public class GravityBody {
         this.worldHandle = world;
         this.mass = mass;
         this.radius = radius;
-        createBody(x, y, radius, BodyDef.BodyType.DynamicBody);
+        createBody(x, y, radius, .5f, BodyDef.BodyType.DynamicBody);
     }
 
     public GravityBody(World world, float x, float y, float radius, float mass, BodyDef.BodyType bodyType) {
         this.worldHandle = world;
         this.mass = mass;
         this.radius = radius;
-        createBody(x, y, radius, bodyType);
+        createBody(x, y, radius, .5f, bodyType);
     }
 
-    private void createBody(float x, float y, float radius, BodyDef.BodyType bodyType) {
+    public GravityBody(World world, float x, float y, float radius, float mass, float restitution, BodyDef.BodyType bodyType) {
+        this.worldHandle = world;
+        this.mass = mass;
+        this.radius = radius;
+        createBody(x, y, radius, restitution, bodyType);
+    }
+
+    private void createBody(float x, float y, float radius, float restitution, BodyDef.BodyType bodyType) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(new Vector2(x, y));
         bodyDef.type = bodyType;
@@ -45,7 +52,8 @@ public class GravityBody {
         CircleShape shape = new CircleShape();
         shape.setRadius(radius);
         fixture = body.createFixture(shape, mass);
-        fixture.setFriction(mass);
+        fixture.setFriction(10);
+        fixture.setRestitution(restitution);
         shape.dispose();
         body.setUserData(new GravityBodyUserData(this));
     }
