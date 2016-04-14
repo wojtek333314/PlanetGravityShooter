@@ -138,4 +138,8 @@ public abstract class PhysicsStage extends BaseStage {
         Gdx.app.exit();
         super.pause();
     }
+
+    public World getWorld() {
+        return world;
+    }
 }
