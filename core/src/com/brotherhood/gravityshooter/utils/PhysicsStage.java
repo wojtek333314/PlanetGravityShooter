@@ -20,7 +20,8 @@ import java.util.ArrayList;
  */
 public abstract class PhysicsStage extends BaseStage {
     private static final float TIME_STEP = 1 / 500f;
-    protected static final int W = 34, H = 20;
+    public static final int W = 34;
+    public static final int H = 20;
     protected World world;
     private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
     private ArrayList<Body> bodyToDestroyList = new ArrayList<Body>();

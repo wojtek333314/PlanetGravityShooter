@@ -10,12 +10,13 @@ public enum ButtonType {
     EXIT,
     COIN_SHOP,
     ITEM_SHOP,
+    OTHER_BUTTON,
     RANK;
 
     public static BodyDef.BodyType defineBodyType(ButtonType buttonType) {
         switch (buttonType) {
             case START:
-                return BodyDef.BodyType.DynamicBody;
+                return BodyDef.BodyType.StaticBody;
             case EXIT:
                 return BodyDef.BodyType.DynamicBody;
             case COIN_SHOP:
