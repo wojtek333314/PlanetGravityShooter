@@ -16,7 +16,7 @@ public class GameMenu extends PhysicsStage {
     MenuButton otherButton2;
     MenuButton otherButton3;
     MenuButton rightButton;
-//    GravitySimulator gravitySimulator;
+//   GravitySimulator gravitySimulator;
 //    Array<GravityBody> buttons = new Array<GravityBody>();
 
     public GameMenu() {
