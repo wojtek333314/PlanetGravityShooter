@@ -52,7 +52,7 @@ public class GravityBody {
         CircleShape shape = new CircleShape();
         shape.setRadius(radius);
         fixture = body.createFixture(shape, mass);
-        fixture.setFriction(10);
+        fixture.setFriction(mass);
         fixture.setRestitution(restitution);
         shape.dispose();
         body.setUserData(new GravityBodyUserData(this));

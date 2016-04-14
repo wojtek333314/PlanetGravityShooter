@@ -25,7 +25,7 @@ public abstract class PhysicsStage extends BaseStage {
     protected World world;
     private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
     private ArrayList<Body> bodyToDestroyList = new ArrayList<Body>();
-
+    private float frameTime;
     private boolean drawDebugLines = false;
     private float accumulator = 0;
 
@@ -56,7 +56,7 @@ public abstract class PhysicsStage extends BaseStage {
     @Override
     public void act(float delta) {
         super.act(delta);
-        float frameTime = Math.min(delta, 0.25f);
+        frameTime = Math.min(delta, 0.25f);
         accumulator += frameTime;
         while (accumulator >= TIME_STEP) {
             world.step(TIME_STEP, 6, 2);

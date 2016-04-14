@@ -60,7 +60,6 @@ public class MenuButton extends GravityBody {
      private static Vector2 calculatePositionByAngle(float angle,float distanceFromCenter){
         float centerX = (W/2 + (float) (distanceFromCenter * Math.sin(Math.toRadians(angle))));
         float centerY = (H/2 + (float) (Math.cos(Math.toRadians(angle)) * distanceFromCenter));
-         System.out.println(centerX + ":" + centerY);
         return new Vector2(centerX,centerY);
     }
 

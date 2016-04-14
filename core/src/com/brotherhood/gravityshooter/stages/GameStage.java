@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactFilter;
@@ -24,11 +25,11 @@ import com.brotherhood.gravityshooter.utils.PhysicsStage;
 /**
  * Created by Wojtek on 2016-04-10.
  */
-public class GameStage extends PhysicsStage implements ContactListener, ContactFilter {
+public class GameStage extends PhysicsStage implements ContactListener, ContactFilter, GestureDetector.GestureListener {
     private Array<GravityBody> gravityBodies = new Array<GravityBody>();
     private GravitySimulator gravitySimulator;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
-    private Vector2 touchPosition;
+    private Vector2 touchPosition = new Vector2(0,0);
 
     public GameStage() {
         super();
@@ -50,7 +51,7 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
 
     @Override
     public void onWorldStep() {
-       // gravitySimulator.gravitySimulation();
+
     }
 
     @Override
@@ -111,8 +112,11 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
 
         Planet planet = new Planet(world, touchPosition.x, touchPosition.y, PlanetType.BLUE);
 
-        planet.getBody().applyForceToCenter(new Vector2(forceVector.x*300, forceVector.y*300),false);
+        //planet.getBody().applyForceToCenter(new Vector2(forceVector.x*300, forceVector.y*300),false);
         gravityBodies.add(planet);
+        System.out.println("frames:" + (1 / Gdx.graphics.getDeltaTime())
+                + "  |   bodies:" + gravityBodies.size
+                + "  |   calculationsTime[ms]:" + gravitySimulator.getCalculationsTime());
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
@@ -130,6 +134,8 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
         return super.scrolled(amount);
     }
 
+
+
     @Override
     public boolean keyDown(int keyCode) {
         if(keyCode == Input.Keys.ENTER)
@@ -139,6 +145,47 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
                     +"  |   calculationsTime[ms]:"+gravitySimulator.getCalculationsTime());
         }
         return super.keyDown(keyCode);
+    }
+
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+
+        return false;
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+        return false;
+    }
+
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        return false;
+    }
+
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean zoom(float initialDistance, float distance) {
+        return false;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        return false;
     }
 }
 

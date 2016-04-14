@@ -8,12 +8,19 @@ import com.brotherhood.gravityshooter.gravity.GravityBody;
  * Created by Wojtek on 2016-04-10.
  */
 public class GravitySimulator {
-    public static final int GRAVITY_CONSTANT = 20;
+    public static final int GRAVITY_CONSTANT = 10;
     private Array<GravityBody> gravityBodies;
     private static int i, j;
     private static long startCalculationsTime;
     private static long calculationsTime;
+
     private boolean calculateInThread = true;
+    private static double gravityForce;//sila grawitacji z wzoru fizycznego
+    private static double angleBetweenBodies ;
+    private static double distance;
+    private static double xForce;
+    private static double yForce;
+
 
     public GravitySimulator(final Array<GravityBody> gravityBodies) {
         this.gravityBodies = gravityBodies;
@@ -51,16 +58,16 @@ public class GravitySimulator {
     }
 
     private void simulateGravity(GravityBody body1, GravityBody body2) {
-        double distance = Math.hypot(body1.getBody().getPosition().x - body2.getBody().getPosition().x,
+        distance = Math.hypot(body1.getBody().getPosition().x - body2.getBody().getPosition().x,
                 body1.getBody().getPosition().y - body2.getBody().getPosition().y);
 
-        double gravityForce = GRAVITY_CONSTANT * ((body1.getMass() * body2.getMass()) / Math.pow(distance, 2));//sila grawitacji z wzoru fizycznego
-        double angleBetweenBodies =
+        gravityForce = GRAVITY_CONSTANT * ((body1.getMass() * body2.getMass()) / Math.pow(distance, 2));//sila grawitacji z wzoru fizycznego
+        angleBetweenBodies =
                 (Math.atan2((body2.getBody().getPosition().y - body1.getBody().getPosition().y)
                         , (body2.getBody().getPosition().x - body1.getBody().getPosition().x)));
 
-        double xForce = Math.cos(angleBetweenBodies) * gravityForce;
-        double yForce = Math.sin(angleBetweenBodies) * gravityForce;
+        xForce = Math.cos(angleBetweenBodies) * gravityForce;
+        yForce = Math.sin(angleBetweenBodies) * gravityForce;
 
         if (body1.isGravityForceEnabled())
             body1.getBody().applyForceToCenter((float) xForce, (float) yForce, false);
