@@ -1,6 +1,5 @@
 package com.brotherhood.gravityshooter.game.systems;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.brotherhood.gravityshooter.game.enums.GravityBodyType;
 import com.brotherhood.gravityshooter.gravity.GravityBody;
@@ -9,21 +8,38 @@ import com.brotherhood.gravityshooter.gravity.GravityBody;
  * Created by Wojtek on 2016-04-10.
  */
 public class GravitySimulator {
-    public static final float GRAVITY_CONSTANT = (float) (4.3f * Math.pow(1, 1));
+    public static final int GRAVITY_CONSTANT = 20;
     private Array<GravityBody> gravityBodies;
     private static int i, j;
-    private static int frameCounter = 0;
+    private static long startCalculationsTime;
+    private static long calculationsTime;
+    private boolean calculateInThread = true;
 
-    public GravitySimulator(Array<GravityBody> gravityBodies) {
+    public GravitySimulator(final Array<GravityBody> gravityBodies) {
         this.gravityBodies = gravityBodies;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(calculateInThread){
+                    try{
+                        startCalculationsTime = System.currentTimeMillis();
+                        gravitySimulation();
+                        calculationsTime = System.currentTimeMillis() - startCalculationsTime;
+                    }catch (NullPointerException e){}
+
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+
+
     }
 
     public void gravitySimulation() {
-        System.out.println(Math.round(1/ Gdx.graphics.getDeltaTime())+":"+gravityBodies.size);
-        if(frameCounter == 2){
-            frameCounter = 0;
-            return;
-        }
         for (i = 0; i < gravityBodies.size; i++) {
             for (j = 0; j < gravityBodies.size; j++) {
                 if (i != j) {
@@ -32,7 +48,6 @@ public class GravitySimulator {
                 }
             }
         }
-        frameCounter++;
     }
 
     private void simulateGravity(GravityBody body1, GravityBody body2) {
@@ -49,5 +64,9 @@ public class GravitySimulator {
 
         if (body1.isGravityForceEnabled())
             body1.getBody().applyForceToCenter((float) xForce, (float) yForce, false);
+    }
+
+    public long getCalculationsTime() {
+        return calculationsTime;
     }
 }

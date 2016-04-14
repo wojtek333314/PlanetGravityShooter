@@ -1,5 +1,7 @@
 package com.brotherhood.gravityshooter.stages;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -43,11 +45,12 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
 
         Planet planet2 = new Planet(world, W / 4, H / 3, PlanetType.BLUE);
         gravityBodies.add(planet2);
+
     }
 
     @Override
     public void onWorldStep() {
-        gravitySimulator.gravitySimulation();
+       // gravitySimulator.gravitySimulation();
     }
 
     @Override
@@ -84,10 +87,10 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
 
     @Override
     public boolean shouldCollide(Fixture fixtureA, Fixture fixtureB) {
-        if(compareCollision(fixtureA,fixtureB,GravityBodyType.PLANET,GravityBodyType.PLANET))
+        if (compareCollision(fixtureA, fixtureB, GravityBodyType.PLANET, GravityBodyType.PLANET))
             return true;
 
-        if(compareCollision(fixtureA,fixtureB,GravityBodyType.PLANET,GravityBodyType.BULLET))
+        if (compareCollision(fixtureA, fixtureB, GravityBodyType.PLANET, GravityBodyType.BULLET))
             return true;
 
         return false;
@@ -103,19 +106,19 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        Vector2 touchUpVector = screenPositionToWorldPosition(screenX,screenY);
+        Vector2 touchUpVector = screenPositionToWorldPosition(screenX, screenY);
         Vector2 forceVector = screenPositionToWorldPosition(touchUpVector.x - touchPosition.x, touchUpVector.y - touchPosition.y);
 
-        Planet planet = new Planet(world, touchPosition.x , touchPosition.y, PlanetType.BLUE);
+        Planet planet = new Planet(world, touchPosition.x, touchPosition.y, PlanetType.BLUE);
 
-      //  planet.getBody().setLinearVelocity(forceVector.x,forceVector.y);
+        planet.getBody().applyForceToCenter(new Vector2(forceVector.x*300, forceVector.y*300),false);
         gravityBodies.add(planet);
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        touchPosition = screenPositionToWorldPosition(screenX,screenY);
+        touchPosition = screenPositionToWorldPosition(screenX, screenY);
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -126,4 +129,16 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
 
         return super.scrolled(amount);
     }
+
+    @Override
+    public boolean keyDown(int keyCode) {
+        if(keyCode == Input.Keys.ENTER)
+        {
+            System.out.println("frames:"+(1/ Gdx.graphics.getDeltaTime())
+                    +"  |   bodies:"+gravityBodies.size
+                    +"  |   calculationsTime[ms]:"+gravitySimulator.getCalculationsTime());
+        }
+        return super.keyDown(keyCode);
+    }
 }
+

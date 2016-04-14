@@ -9,7 +9,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 700;
 		config.height = 400;
-		config.vSyncEnabled = false; 
+		config.vSyncEnabled = false;
 		new LwjglApplication(new Launcher(), config);
 	}
 }
