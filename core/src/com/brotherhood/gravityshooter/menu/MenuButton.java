@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.brotherhood.gravityshooter.game.enums.ButtonType;
 import com.brotherhood.gravityshooter.gravity.GravityBody;
+import com.brotherhood.gravityshooter.stages.GameStage;
 import com.brotherhood.gravityshooter.utils.BaseStage;
 import com.brotherhood.gravityshooter.utils.PhysicsStage;
 
@@ -26,7 +27,7 @@ public class MenuButton extends GravityBody {
 
 
 
-    public MenuButton(PhysicsStage stage, ButtonType buttonType, float angle, float distanceFromCenter) {
+    public MenuButton(final PhysicsStage stage, ButtonType buttonType, float angle, float distanceFromCenter) {
         super(stage.getWorld()
                 , calculatePositionByAngle(angle,distanceFromCenter).x
                 , calculatePositionByAngle(angle,distanceFromCenter).y
@@ -41,6 +42,7 @@ public class MenuButton extends GravityBody {
         button.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                stage.redirect(new GameStage());
                 return super.touchDown(event, x, y, pointer, button);
             }
 
@@ -50,7 +52,6 @@ public class MenuButton extends GravityBody {
                 super.touchDragged(event, x, y, pointer);
             }
         });
-
 
         stage.addActor(button);
 
