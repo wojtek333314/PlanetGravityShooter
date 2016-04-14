@@ -28,9 +28,6 @@ public class MenuStage extends PhysicsStage {
     public MenuStage() {
         super(0, 0, true);
         setDrawDebugLines(true);
-
-
-
         setBackgroundColor(new Color(0, 0, 0, 0));
     }
 

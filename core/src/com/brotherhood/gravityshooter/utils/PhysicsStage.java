@@ -78,10 +78,8 @@ public abstract class PhysicsStage extends BaseStage {
         Body body = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(width, height);
-        Fixture fixture = body.createFixture(shape, .001f);
-        fixture.setDensity(5);
-        fixture.setFriction(.4f);
-        fixture.setRestitution(.2f);
+        Fixture fixture = body.createFixture(shape, 1);
+        fixture.setFriction(1);
         shape.dispose();
         return body;
     }

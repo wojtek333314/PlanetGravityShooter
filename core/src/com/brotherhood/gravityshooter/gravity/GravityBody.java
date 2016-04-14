@@ -27,17 +27,24 @@ public class GravityBody {
         this.worldHandle = world;
         this.mass = mass;
         this.radius = radius;
-        createBody(x, y, radius, BodyDef.BodyType.DynamicBody);
+        createBody(x, y, radius, .5f, BodyDef.BodyType.DynamicBody);
     }
 
     public GravityBody(World world, float x, float y, float radius, float mass, BodyDef.BodyType bodyType) {
         this.worldHandle = world;
         this.mass = mass;
         this.radius = radius;
-        createBody(x, y, radius, bodyType);
+        createBody(x, y, radius, .5f, bodyType);
     }
 
-    private void createBody(float x, float y, float radius, BodyDef.BodyType bodyType) {
+    public GravityBody(World world, float x, float y, float radius, float mass, float restitution, BodyDef.BodyType bodyType) {
+        this.worldHandle = world;
+        this.mass = mass;
+        this.radius = radius;
+        createBody(x, y, radius, restitution, bodyType);
+    }
+
+    private void createBody(float x, float y, float radius, float restitution, BodyDef.BodyType bodyType) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(new Vector2(x, y));
         bodyDef.type = bodyType;
@@ -46,6 +53,7 @@ public class GravityBody {
         shape.setRadius(radius);
         fixture = body.createFixture(shape, mass);
         fixture.setFriction(10);
+        fixture.setRestitution(restitution);
         shape.dispose();
         body.setUserData(new GravityBodyUserData(this));
     }
@@ -65,15 +73,15 @@ public class GravityBody {
     public void drawGravityRange(ShapeRenderer shapeRenderer) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
-        shapeRenderer.circle(body.getPosition().x, body.getPosition().y, getRadius(),20);
+        shapeRenderer.circle(body.getPosition().x, body.getPosition().y, getRadius(), 20);
         shapeRenderer.end();
     }
 
-    public void onDraw(Batch batch){
+    public void onDraw(Batch batch) {
 
     }
 
-    public void onCollision(GravityBody gravityBody){
+    public void onCollision(GravityBody gravityBody) {
 
     }
 
