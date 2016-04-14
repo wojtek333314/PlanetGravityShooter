@@ -41,9 +41,8 @@ public class MenuButton extends GravityBody {
         this.distanceFromCenter = distanceFromCenter;
         button.addListener(new ClickListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 stage.redirect(new GameStage());
-                return super.touchDown(event, x, y, pointer, button);
             }
 
             @Override
@@ -60,7 +59,6 @@ public class MenuButton extends GravityBody {
      private static Vector2 calculatePositionByAngle(float angle,float distanceFromCenter){
         float centerX = (W/2 + (float) (distanceFromCenter * Math.sin(Math.toRadians(angle))));
         float centerY = (H/2 + (float) (Math.cos(Math.toRadians(angle)) * distanceFromCenter));
-         System.out.println(centerX + ":" + centerY);
         return new Vector2(centerX,centerY);
     }
 
