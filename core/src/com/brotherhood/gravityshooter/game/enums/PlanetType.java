@@ -6,18 +6,18 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
  * Created by Wojtek on 2016-04-10.
  */
 public enum  PlanetType {
-    BLUE,
-    YELLOW,
-    GREEN;
+    EARTH,
+    VENUS,
+    MARS;
 
     public static float definePlanetMass(PlanetType planetType){
         switch (planetType){
-            case BLUE:
+            case EARTH:
                 return 1;
-            case YELLOW:
-                return 1;
-            case GREEN:
-                return 2 ;
+            case VENUS:
+                return 5;
+            case MARS:
+                return 15;
             default:
                 return 1;
         }
@@ -25,12 +25,12 @@ public enum  PlanetType {
 
     public static float defineRadius(PlanetType planetType){
         switch (planetType){
-            case BLUE:
+            case EARTH:
                 return .5f;
-            case YELLOW:
+            case VENUS:
+                return 1f;
+            case MARS:
                 return 1.5f;
-            case GREEN:
-                return 1;
             default:
                 return 1;
         }
@@ -38,12 +38,12 @@ public enum  PlanetType {
 
     public static BodyDef.BodyType defineBodyType(PlanetType planetType){
         switch (planetType){
-            case BLUE:
+            case EARTH:
                 return BodyDef.BodyType.DynamicBody;
-            case YELLOW:
+            case VENUS:
                 return BodyDef.BodyType.DynamicBody;
-            case GREEN:
-                return BodyDef.BodyType.DynamicBody;
+            case MARS:
+                return BodyDef.BodyType.StaticBody;
             default:
                 return BodyDef.BodyType.KinematicBody;
         }
@@ -51,12 +51,12 @@ public enum  PlanetType {
 
     public static String definePlanetTexturePath(PlanetType planetType){
         switch (planetType){
-            case BLUE:
-                return "gfx/planets/blue.png";
-            case YELLOW:
-                return "gfx/planets/yellow.png";
-            case GREEN:
-                return "gfx/planets/green.png";
+            case EARTH:
+                return "gfx/planets/earth.png";
+            case VENUS:
+                return "gfx/planets/venus.png";
+            case MARS:
+                return "gfx/planets/mars.png";
             default:
                 return null;
         }

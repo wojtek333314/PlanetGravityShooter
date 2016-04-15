@@ -32,7 +32,7 @@ public class GameMenu extends PhysicsStage {
             menuButtons.add(tmp);
         }
 
-
+        resetInputProcessor();
     }
 
     @Override

@@ -45,7 +45,6 @@ public class BaseStage extends Stage implements Screen, InputProcessor {
 
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(this);
-        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     /**
@@ -53,12 +52,24 @@ public class BaseStage extends Stage implements Screen, InputProcessor {
      *
      * @param baseStage
      */
-    public void redirect(BaseStage baseStage) {
+    public void redirect(final BaseStage baseStage) {
         if (baseStage == null) {
             Gdx.app.exit();
             return;
         }
         Launcher.baseStage = baseStage;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Gdx.input.setInputProcessor(baseStage.inputMultiplexer);
+            }
+        }).start();
+
     }
 
     /**
@@ -318,6 +329,14 @@ public class BaseStage extends Stage implements Screen, InputProcessor {
             return true;
         } else
             return super.keyDown(keyCode);
+    }
+
+    /**
+     * Set multiplexer, this method should be called in stage started only in Launcher.
+     * Other stages have this method after redirect.
+     */
+    public void resetInputProcessor(){
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     /**

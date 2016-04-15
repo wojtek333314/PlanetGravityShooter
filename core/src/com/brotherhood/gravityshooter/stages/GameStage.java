@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactFilter;
@@ -25,11 +24,14 @@ import com.brotherhood.gravityshooter.utils.PhysicsStage;
 /**
  * Created by Wojtek on 2016-04-10.
  */
-public class GameStage extends PhysicsStage implements ContactListener, ContactFilter, GestureDetector.GestureListener {
-    private Array<GravityBody> gravityBodies = new Array<GravityBody>();
+public class GameStage extends PhysicsStage implements ContactListener, ContactFilter {
+    public static Array<GravityBody> gravityBodies = new Array<GravityBody>();
     private GravitySimulator gravitySimulator;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
-    private Vector2 touchPosition = new Vector2(0,0);
+    private Vector2 touchPosition = new Vector2(0, 0);
+    private PlanetType currentPlanetTypeToAdd = PlanetType.EARTH;
+    private int currentPlanetTypeIndex = 0;
+    private boolean moveCamera = false;
 
     public GameStage() {
         super();
@@ -40,13 +42,6 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
         world.setContactFilter(this);
 
         gravitySimulator = new GravitySimulator(gravityBodies);
-
-        Planet planet = new Planet(world, W / 2, H / 2, PlanetType.GREEN);
-        gravityBodies.add(planet);
-
-        Planet planet2 = new Planet(world, W / 4, H / 3, PlanetType.BLUE);
-        gravityBodies.add(planet2);
-
     }
 
     @Override
@@ -60,7 +55,11 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         for (GravityBody gravityBody : gravityBodies)
+        {
             gravityBody.onDraw(getBatch());
+            gravityBody.drawGravityRange(shapeRenderer);
+        }
+
     }
 
     @Override
@@ -108,22 +107,38 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         Vector2 touchUpVector = screenPositionToWorldPosition(screenX, screenY);
-        Vector2 forceVector = screenPositionToWorldPosition(touchUpVector.x - touchPosition.x, touchUpVector.y - touchPosition.y);
+        Vector2 forceVector = new Vector2(touchUpVector.x - touchPosition.x, touchUpVector.y - touchPosition.y);
+        moveCamera = false;
+        if (button == 0) {
 
-        Planet planet = new Planet(world, touchPosition.x, touchPosition.y, PlanetType.BLUE);
+            Planet planet = new Planet(this, touchPosition.x, touchPosition.y, currentPlanetTypeToAdd);
 
-        //planet.getBody().applyForceToCenter(new Vector2(forceVector.x*300, forceVector.y*300),false);
-        gravityBodies.add(planet);
-        System.out.println("frames:" + (1 / Gdx.graphics.getDeltaTime())
-                + "  |   bodies:" + gravityBodies.size
-                + "  |   calculationsTime[ms]:" + gravitySimulator.getCalculationsTime());
+            planet.getBody().setLinearVelocity(forceVector);
+            gravityBodies.add(planet);
+        }
+
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        touchPosition = screenPositionToWorldPosition(screenX, screenY);
+        if (button == 0)//left
+            touchPosition = screenPositionToWorldPosition(screenX, screenY);
+        else
+            moveCamera = true;
         return super.touchDown(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        Vector2 touchUpVector = screenPositionToWorldPosition(screenX, screenY);
+        Vector2 forceVector = new Vector2(touchUpVector.x - touchPosition.x, touchUpVector.y - touchPosition.y);
+
+        if (moveCamera) {
+            camera.position.x += forceVector.x / -300;
+            camera.position.y += forceVector.y / -300;
+        }
+        return super.touchDragged(screenX, screenY, pointer);
     }
 
     @Override
@@ -134,58 +149,43 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
         return super.scrolled(amount);
     }
 
-
-
     @Override
     public boolean keyDown(int keyCode) {
-        if(keyCode == Input.Keys.ENTER)
-        {
-            System.out.println("frames:"+(1/ Gdx.graphics.getDeltaTime())
-                    +"  |   bodies:"+gravityBodies.size
-                    +"  |   calculationsTime[ms]:"+gravitySimulator.getCalculationsTime());
+        switch (keyCode) {
+            case Input.Keys.ENTER:
+
+                System.out.println("frames:" + (1 / Gdx.graphics.getDeltaTime())
+                        + "  |   bodies:" + gravityBodies.size
+                        + "  |   calculationsTime[ms]:" + gravitySimulator.getCalculationsTime());
+                break;
+            case Input.Keys.P:
+                for (GravityBody gravityBody : gravityBodies) {
+                    setBodyToDestroy(gravityBody.getBody());
+                }
+                gravityBodies.clear();
+                break;
+            case Input.Keys.D:
+                currentPlanetTypeIndex++;
+                if (currentPlanetTypeIndex >= PlanetType.values().length)
+                    currentPlanetTypeIndex = 0;
+                currentPlanetTypeToAdd = PlanetType.values()[currentPlanetTypeIndex];
+                break;
+            case Input.Keys.A:
+                currentPlanetTypeIndex--;
+                if (currentPlanetTypeIndex < 0)
+                    currentPlanetTypeIndex = PlanetType.values().length - 1;
+                currentPlanetTypeToAdd = PlanetType.values()[currentPlanetTypeIndex];
+                break;
         }
         return super.keyDown(keyCode);
     }
 
     @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
-
-        return false;
-    }
-
-    @Override
-    public boolean tap(float x, float y, int count, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean longPress(float x, float y) {
-        return false;
-    }
-
-    @Override
-    public boolean fling(float velocityX, float velocityY, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY) {
-        return false;
-    }
-
-    @Override
-    public boolean panStop(float x, float y, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean zoom(float initialDistance, float distance) {
-        return false;
-    }
-
-    @Override
-    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        return false;
+    public boolean keyTyped(char character) {
+        if (character == 'r')
+            for (GravityBody gravityBody : gravityBodies)
+                gravityBody.getBody().setLinearVelocity(0, 0);
+        return super.keyTyped(character);
     }
 }
 

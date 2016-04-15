@@ -22,11 +22,13 @@ public class GravityBody {
     private float mass = 1;
     private boolean gravityForceEnabled = true;
     private float radius;
+    private float gravityRange;
 
     public GravityBody(World world, float x, float y, float radius, float mass) {
         this.worldHandle = world;
         this.mass = mass;
         this.radius = radius;
+        this.gravityRange = mass;
         createBody(x, y, radius, .5f, BodyDef.BodyType.DynamicBody);
     }
 
@@ -34,6 +36,7 @@ public class GravityBody {
         this.worldHandle = world;
         this.mass = mass;
         this.radius = radius;
+        this.gravityRange = mass;
         createBody(x, y, radius, .5f, bodyType);
     }
 
@@ -41,6 +44,7 @@ public class GravityBody {
         this.worldHandle = world;
         this.mass = mass;
         this.radius = radius;
+        this.gravityRange = mass;
         createBody(x, y, radius, restitution, bodyType);
     }
 
@@ -73,7 +77,7 @@ public class GravityBody {
     public void drawGravityRange(ShapeRenderer shapeRenderer) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
-        shapeRenderer.circle(body.getPosition().x, body.getPosition().y, getRadius(), 20);
+        shapeRenderer.circle(body.getPosition().x, body.getPosition().y, gravityRange, 20);
         shapeRenderer.end();
     }
 
@@ -99,5 +103,13 @@ public class GravityBody {
 
     public void setGravityForceEnabled(boolean gravityForceEnabled) {
         this.gravityForceEnabled = gravityForceEnabled;
+    }
+
+    public float getGravityRange() {
+        return gravityRange;
+    }
+
+    public void setGravityRange(float gravityRange) {
+        this.gravityRange = gravityRange;
     }
 }

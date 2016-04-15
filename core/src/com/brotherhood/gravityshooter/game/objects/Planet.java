@@ -2,11 +2,10 @@ package com.brotherhood.gravityshooter.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.physics.box2d.World;
-import com.brotherhood.gravityshooter.game.enums.GravityBodyType;
 import com.brotherhood.gravityshooter.game.enums.PlanetType;
 import com.brotherhood.gravityshooter.gravity.GravityBody;
 import com.brotherhood.gravityshooter.utils.BaseStage;
+import com.brotherhood.gravityshooter.utils.PhysicsStage;
 
 /**
  * Created by Wojtek on 2016-04-10.
@@ -15,16 +14,22 @@ public class Planet extends GravityBody {
 
     private Sprite sprite;
     private PlanetType planetType;
+    private PhysicsStage stageHandle;
+    private Sprite range;
 
-    public Planet(World world, float x, float y, PlanetType planetType) {
-        super(world, x, y
+    public Planet(PhysicsStage stage, float x, float y, PlanetType planetType) {
+        super(stage.getWorld(), x, y
                 , PlanetType.defineRadius(planetType)
                 , PlanetType.definePlanetMass(planetType)
                 , PlanetType.defineBodyType(planetType));
         this.planetType = planetType;
+        this.stageHandle = stage;
         sprite = new Sprite(BaseStage.getTextureRegion(PlanetType.definePlanetTexturePath(planetType)));
         sprite.setSize(getBody().getFixtureList().get(0).getShape().getRadius() * 2
                 , getBody().getFixtureList().get(0).getShape().getRadius() * 2);
+
+        range = new Sprite(BaseStage.getTextureRegion("gfx/planets/range.png"));
+        range.setSize(getGravityRange()*2,getGravityRange()*2);
     }
 
     @Override
@@ -32,7 +37,9 @@ public class Planet extends GravityBody {
         super.onDraw(batch);
         sprite.setPosition(getBody().getPosition().x - sprite.getWidth() / 2
                 , getBody().getPosition().y - sprite.getHeight() / 2);
+        range.setPosition(sprite.getX()+sprite.getWidth()/2 - range.getWidth()/2, sprite.getY()+sprite.getHeight()/2 - range.getHeight()/2);
         batch.begin();
+        range.draw(batch);
         sprite.draw(batch);
         batch.end();
     }
@@ -40,11 +47,6 @@ public class Planet extends GravityBody {
     @Override
     public void onCollision(GravityBody gravityBody) {
 
-        if(gravityBody.getType()== GravityBodyType.PLANET)
-        {
-           // getBody().setLinearVelocity(0,0);
-           // setGravityForceEnabled(false);
-        }
     }
 
     public PlanetType getPlanetType() {

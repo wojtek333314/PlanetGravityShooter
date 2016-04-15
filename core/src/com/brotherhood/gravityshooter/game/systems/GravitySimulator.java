@@ -8,7 +8,7 @@ import com.brotherhood.gravityshooter.gravity.GravityBody;
  * Created by Wojtek on 2016-04-10.
  */
 public class GravitySimulator {
-    public static final int GRAVITY_CONSTANT = 10;
+    public static final float GRAVITY_CONSTANT = 5;
     private Array<GravityBody> gravityBodies;
     private static int i, j;
     private static long startCalculationsTime;
@@ -42,8 +42,6 @@ public class GravitySimulator {
                 }
             }
         }).start();
-
-
     }
 
     public void gravitySimulation() {
@@ -60,6 +58,8 @@ public class GravitySimulator {
     private void simulateGravity(GravityBody body1, GravityBody body2) {
         distance = Math.hypot(body1.getBody().getPosition().x - body2.getBody().getPosition().x,
                 body1.getBody().getPosition().y - body2.getBody().getPosition().y);
+        if(distance > body2.getMass())
+            return;
 
         gravityForce = GRAVITY_CONSTANT * ((body1.getMass() * body2.getMass()) / Math.pow(distance, 2));//sila grawitacji z wzoru fizycznego
         angleBetweenBodies =
