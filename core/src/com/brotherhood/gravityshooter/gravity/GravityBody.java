@@ -15,6 +15,8 @@ import com.brotherhood.gravityshooter.game.enums.GravityBodyType;
  * Created by Wojtek on 2016-03-22.
  */
 public class GravityBody {
+    private final static int gravityRangeLinesCount = 36;
+
     private World worldHandle;
     private Body body;
     private Fixture fixture;
@@ -76,9 +78,24 @@ public class GravityBody {
 
     public void drawGravityRange(ShapeRenderer shapeRenderer) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.circle(body.getPosition().x, body.getPosition().y, gravityRange, 20);
+
+        for (int i = 0; i <= gravityRangeLinesCount; i++) {
+            if (i % 2 == 0)
+                continue;
+            shapeRenderer.setColor(Color.RED);
+            Vector2 startPoint = pointOnBodyEdge(i * (360 / gravityRangeLinesCount));
+            Vector2 endPoint = pointOnBodyEdge((i + 1) * (360 / gravityRangeLinesCount));
+            shapeRenderer.line(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+        }
         shapeRenderer.end();
+
+    }
+
+    private Vector2 pointOnBodyEdge(float alfa) {
+        Vector2 result = new Vector2(0, 0);
+        result.x = (float) (getBody().getPosition().x + Math.sin(Math.toRadians(alfa)) * getGravityRange());
+        result.y = (float) (getBody().getPosition().y + Math.cos(Math.toRadians(alfa)) * getGravityRange());
+        return result;
     }
 
     public void onDraw(Batch batch) {
