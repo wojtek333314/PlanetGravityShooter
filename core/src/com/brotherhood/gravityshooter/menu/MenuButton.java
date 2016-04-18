@@ -36,7 +36,7 @@ public class MenuButton extends GravityBody {
 
 
     public MenuButton(final PhysicsStage stage, ButtonType buttonType, float angle, float distanceFromCenter) {
-        super(stage.getWorld()
+        super(stage
                 , calculatePositionByAngle(angle,distanceFromCenter).x
                 , calculatePositionByAngle(angle,distanceFromCenter).y
                 , buttonType == ButtonType.START ? 3 : 2
