@@ -8,8 +8,9 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.brotherhood.gravityshooter.game.enums.GravityBodyType;
+import com.brotherhood.gravityshooter.utils.PhysicsStage;
 
 /**
  * Created by Wojtek on 2016-03-22.
@@ -17,7 +18,7 @@ import com.brotherhood.gravityshooter.game.enums.GravityBodyType;
 public class GravityBody {
     private final static int gravityRangeLinesCount = 36;
 
-    private World worldHandle;
+    protected PhysicsStage physicsStage;
     private Body body;
     private Fixture fixture;
     private GravityBodyType type = GravityBodyType.PLANET;
@@ -25,40 +26,54 @@ public class GravityBody {
     private boolean gravityForceEnabled = true;
     private float radius;
     private float gravityRange;
+    private Orbit orbit;
 
-    public GravityBody(World world, float x, float y, float radius, float mass) {
-        this.worldHandle = world;
+    public GravityBody(PhysicsStage physicsStage, float x, float y, float width, float height, float mass) {
+        this.physicsStage = physicsStage;
+        this.mass = mass;
+        this.gravityRange = mass;
+        createRectangleDynamicBody(x, y, width, height, mass);
+    }
+
+    public GravityBody(PhysicsStage physicsStage, float x, float y, float radius, float mass) {
+        this(physicsStage, x, y, radius, mass, .5f, BodyDef.BodyType.DynamicBody);
+    }
+
+    public GravityBody(PhysicsStage physicsStage, float x, float y, float radius, float mass, BodyDef.BodyType bodyType) {
+        this(physicsStage, x, y, radius, mass, .5f, bodyType);
+    }
+
+    public GravityBody(PhysicsStage physicsStage, float x, float y, float radius, float mass, float restitution, BodyDef.BodyType bodyType) {
+        this.physicsStage = physicsStage;
         this.mass = mass;
         this.radius = radius;
         this.gravityRange = mass;
-        createBody(x, y, radius, .5f, BodyDef.BodyType.DynamicBody);
+        createBody(x, y, radius, 1, restitution, bodyType);
     }
 
-    public GravityBody(World world, float x, float y, float radius, float mass, BodyDef.BodyType bodyType) {
-        this.worldHandle = world;
-        this.mass = mass;
-        this.radius = radius;
-        this.gravityRange = mass;
-        createBody(x, y, radius, .5f, bodyType);
+    private void createRectangleDynamicBody(float x, float y, float width, float height, float mass) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.position.set(new Vector2(x, y));
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        body = physicsStage.getWorld().createBody(bodyDef);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(width,height);
+        fixture = body.createFixture(shape, mass);
+        fixture.setFriction(1);
+        fixture.setRestitution(.5f);
+        shape.dispose();
+        body.setUserData(new GravityBodyUserData(this));
     }
 
-    public GravityBody(World world, float x, float y, float radius, float mass, float restitution, BodyDef.BodyType bodyType) {
-        this.worldHandle = world;
-        this.mass = mass;
-        this.radius = radius;
-        this.gravityRange = mass;
-        createBody(x, y, radius, restitution, bodyType);
-    }
-
-    private void createBody(float x, float y, float radius, float restitution, BodyDef.BodyType bodyType) {
+    private void createBody(float x, float y, float radius, float friction, float restitution, BodyDef.BodyType bodyType) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(new Vector2(x, y));
         bodyDef.type = bodyType;
-        body = worldHandle.createBody(bodyDef);
+        body = physicsStage.getWorld().createBody(bodyDef);
         CircleShape shape = new CircleShape();
         shape.setRadius(radius);
         fixture = body.createFixture(shape, mass);
-        fixture.setFriction(mass);
+        fixture.setFriction(friction);
         fixture.setRestitution(restitution);
         shape.dispose();
         body.setUserData(new GravityBodyUserData(this));
@@ -87,8 +102,8 @@ public class GravityBody {
             Vector2 endPoint = pointOnBodyEdge((i + 1) * (360 / gravityRangeLinesCount));
             shapeRenderer.line(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
         }
-        shapeRenderer.end();
 
+        shapeRenderer.end();
     }
 
     private Vector2 pointOnBodyEdge(float alfa) {
@@ -128,5 +143,24 @@ public class GravityBody {
 
     public void setGravityRange(float gravityRange) {
         this.gravityRange = gravityRange;
+    }
+
+    public void setOrbit(Orbit orbit) {
+        this.orbit = orbit;
+        float x = (float) (orbit.getCenter().getBody().getPosition().x + Math.sin(Math.toRadians(45)) * orbit.getHeight());
+        float y = (float) (orbit.getCenter().getBody().getPosition().y + Math.cos(Math.toRadians(45)) * orbit.getHeight());
+        this.getBody().setTransform(x, y, 0);
+    }
+
+    public Orbit getOrbit() {
+        return orbit;
+    }
+
+    public void disableOrbiting() {
+        orbit = null;
+    }
+
+    public void setType(GravityBodyType type) {
+        this.type = type;
     }
 }

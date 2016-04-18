@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactFilter;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.utils.Array;
 import com.brotherhood.gravityshooter.game.enums.GravityBodyType;
 import com.brotherhood.gravityshooter.game.enums.PlanetType;
 import com.brotherhood.gravityshooter.game.objects.Planet;
+import com.brotherhood.gravityshooter.game.objects.Rocket;
 import com.brotherhood.gravityshooter.game.systems.GravitySimulator;
 import com.brotherhood.gravityshooter.gravity.GravityBody;
 import com.brotherhood.gravityshooter.gravity.GravityBodyUserData;
@@ -32,16 +34,24 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
     private PlanetType currentPlanetTypeToAdd = PlanetType.EARTH;
     private int currentPlanetTypeIndex = 0;
     private boolean moveCamera = false;
+    private Rocket rocket;
 
     public GameStage() {
         super();
         setBackgroundColor(new Color(0, 0, 0, 0));
+    //    setDrawDebugLines(true);
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         world.setContactListener(this);
         world.setContactFilter(this);
 
         gravitySimulator = new GravitySimulator(gravityBodies);
+
+        Planet sun = new Planet(this, 10, 10, PlanetType.MARS);
+        gravityBodies.add(sun);
+
+        rocket = new Rocket(this, 10, 0);
+        gravityBodies.add(rocket);
     }
 
     @Override
@@ -54,11 +64,12 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
         super.act(delta);
         shapeRenderer.setProjectionMatrix(camera.combined);
 
-        for (GravityBody gravityBody : gravityBodies)
-        {
+        for (GravityBody gravityBody : gravityBodies) {
             gravityBody.onDraw(getBatch());
             gravityBody.drawGravityRange(shapeRenderer);
         }
+
+        rocket.onDraw(getBatch());
 
     }
 
@@ -112,9 +123,11 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
         if (button == 0) {
 
             Planet planet = new Planet(this, touchPosition.x, touchPosition.y, currentPlanetTypeToAdd);
-
             planet.getBody().setLinearVelocity(forceVector);
             gravityBodies.add(planet);
+
+            for (GravityBody gravityBody : gravityBodies)
+                gravityBody.getBody().applyForceToCenter(.0000001f, .0000001f, true);
         }
 
         return super.touchUp(screenX, screenY, pointer, button);
@@ -186,6 +199,14 @@ public class GameStage extends PhysicsStage implements ContactListener, ContactF
             for (GravityBody gravityBody : gravityBodies)
                 gravityBody.getBody().setLinearVelocity(0, 0);
         return super.keyTyped(character);
+    }
+
+    @Override
+    public void setBodyToDestroy(Body bodyToRemove) {
+        super.setBodyToDestroy(bodyToRemove);
+        for (int i = 0; i < gravityBodies.size; i++)
+            if (gravityBodies.get(i).getBody().equals(bodyToRemove))
+                gravityBodies.removeIndex(i);
     }
 }
 

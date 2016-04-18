@@ -7,7 +7,8 @@ public enum GravityBodyType {
     PLANET,
     BLACK_HOLE,
     WHITE_HOLE,
-    BULLET;
+    BULLET,
+    ROCKET;
 
     public static boolean simulateGravityBetweenTypes(GravityBodyType type1, GravityBodyType type2) {
 
@@ -16,6 +17,7 @@ public enum GravityBodyType {
         if (type1 == PLANET && type2 == BULLET) return true;// planeta przyciaga pocisk
         if (type1 == BULLET && type2 == PLANET) return true;// ale pocisk nie przyciaga planety
 
+        if (type1 == ROCKET && type2 == PLANET || type1 == PLANET && type2 == ROCKET) return true;
         return false;
     }
 }
