@@ -17,7 +17,7 @@ public class GameMenu extends PhysicsStage {
 
     public GameMenu() {
         super(0, 0, true);
-        setDrawDebugLines(true);
+        setDrawDebugLines(false);
         setBackgroundColor(new Color(0, 0, 0, 0));
         createBorder();
         Image background = new Image(getTextureRegion("gfx/tlo.png"));
@@ -28,10 +28,9 @@ public class GameMenu extends PhysicsStage {
         menuButtons.add(tmp);
         float angle = (360 /(ButtonType.values().length - 1));
         for (int i = 1; i < ButtonType.values().length; i++) {
-             tmp = new MenuButton(this, ButtonType.values()[i], i*angle, 8);
+             tmp = new MenuButton(this, ButtonType.values()[i], i*angle, 7f);
             menuButtons.add(tmp);
         }
-
 
     }
 
@@ -41,10 +40,10 @@ public class GameMenu extends PhysicsStage {
     }
 
     public void createBorder() {
-        createBox(-0.01f, 0, 0.01f, H, BodyDef.BodyType.StaticBody); // left
-        createBox(W + 0.02f, 0, 0.01f, H, BodyDef.BodyType.StaticBody); // right
-        createBox(0, H + 0.02f, W, 0.01f, BodyDef.BodyType.StaticBody); // top
-        createBox(0, -0.01f, W, 0.01f, BodyDef.BodyType.StaticBody); // bottom
+        createBox(-0.01f, 0, 0.01f, H, BodyDef.BodyType.KinematicBody); // left
+        createBox(W + 0.02f, 0, 0.01f, H, BodyDef.BodyType.KinematicBody); // right
+        createBox(0, H + 0.02f, W, 0.01f, BodyDef.BodyType.KinematicBody); // top
+        createBox(0, -0.01f, W, 0.01f, BodyDef.BodyType.KinematicBody); // bottom
     }
 
     @Override

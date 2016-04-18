@@ -13,7 +13,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Wojtek on 2016-03-13.
@@ -24,7 +24,8 @@ public abstract class PhysicsStage extends BaseStage {
     public static final int H = 20;
     protected World world;
     private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
-    private ArrayList<Body> bodyToDestroyList = new ArrayList<Body>();
+    private Array<Body> bodyToDestroyList = new Array<Body>();
+    private HashMap<Body, TransformModel> bodyToTransformList = new HashMap<Body, TransformModel>();
 
     private boolean drawDebugLines = false;
     private float accumulator = 0;
@@ -64,6 +65,11 @@ public abstract class PhysicsStage extends BaseStage {
             onWorldStep();
 
             if (!world.isLocked()) {
+                for (Body body : bodyToTransformList.keySet()) {
+                    body.setTransform(bodyToTransformList.get(body).vector, bodyToTransformList.get(body).angle);
+                }
+                bodyToTransformList.clear();
+
                 for (Body body : bodyToDestroyList)
                     if (body != null)
                         removeBodySafely(body);
@@ -79,8 +85,7 @@ public abstract class PhysicsStage extends BaseStage {
         Body body = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(width, height);
-        Fixture fixture = body.createFixture(shape, 1);
-        fixture.setFriction(1);
+        Fixture fixture = body.createFixture(shape, 1000);
         shape.dispose();
         return body;
     }
@@ -109,6 +114,10 @@ public abstract class PhysicsStage extends BaseStage {
 
     public void setBodyToDestroy(Body bodyToRemove) {
         bodyToDestroyList.add(bodyToRemove);
+    }
+
+    public void setBodyToTransform(Body bodyToTranslate, float x,float y,float angle) {
+        bodyToTransformList.put(bodyToTranslate,new TransformModel(x,y,angle));
     }
 
     private void removeBodySafely(Body body) {
@@ -140,5 +149,36 @@ public abstract class PhysicsStage extends BaseStage {
 
     public World getWorld() {
         return world;
+    }
+
+    public class TransformModel {
+        private Vector2 vector;
+        private float angle;
+
+        public TransformModel(Vector2 vector, float angle) {
+            this.vector = vector;
+            this.angle = angle;
+        }
+
+        public TransformModel(float x,float y,float angle){
+            this.vector = new Vector2(x,y);
+            this.angle = angle;
+        }
+
+        public Vector2 getVector() {
+            return vector;
+        }
+
+        public void setVector(Vector2 vector) {
+            this.vector = vector;
+        }
+
+        public float getAngle() {
+            return angle;
+        }
+
+        public void setAngle(float angle) {
+            this.angle = angle;
+        }
     }
 }
