@@ -20,8 +20,6 @@ import java.util.HashMap;
  */
 public abstract class PhysicsStage extends BaseStage {
     private static final float TIME_STEP = 1 / 500f;
-    public static final int W = 34;
-    public static final int H = 20;
     protected World world;
     private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
     private Array<Body> bodyToDestroyList = new Array<Body>();
@@ -35,16 +33,13 @@ public abstract class PhysicsStage extends BaseStage {
         world = new World(new Vector2(gravityX, gravityY), doSleep);
         camera = new OrthographicCamera(W, H);
         camera.position.set(W / 2, H / 2, 0);
-        getViewport().setCamera(camera);
+
         getBatch().setProjectionMatrix(camera.combined);
+        getViewport().setCamera(camera);
     }
 
     public PhysicsStage() {
         this(0, 0, true);
-        world = new World(new Vector2(0, 0f), true);
-        camera = new OrthographicCamera(W, H);
-        camera.position.set(W / 2, H / 2, 0);
-        getViewport().setCamera(camera);
     }
 
 

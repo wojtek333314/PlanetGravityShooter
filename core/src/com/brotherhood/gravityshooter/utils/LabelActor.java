@@ -3,6 +3,7 @@ package com.brotherhood.gravityshooter.utils;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
 
@@ -89,6 +90,10 @@ public class LabelActor extends Actor {
         return glyphLayout.width;
     }
 
+    public void setPosition(StagePosition stagePosition){
+        Vector2 position = StagePosition.getPositionOnStage(stagePosition,this);
+        setPosition(position.x,position.y);
+    }
 
     @Override
     public float getHeight() {

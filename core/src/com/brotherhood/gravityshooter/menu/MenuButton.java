@@ -29,8 +29,8 @@ public class MenuButton extends GravityBody {
     private PhysicsStage stage;
     private boolean isKeyPressedDown = false;
     private boolean breathThreadWorking = true;
-    private float breathAmplitude = .2f;
-    private float maxSpeedBeforeResetPosition = 2f;
+    private float breathAmplitude = .02f;
+    private float maxSpeedBeforeResetPosition = .2f;
     private float radius;
 
 
@@ -39,16 +39,16 @@ public class MenuButton extends GravityBody {
         super(stage
                 , calculatePositionByAngle(angle,distanceFromCenter).x
                 , calculatePositionByAngle(angle,distanceFromCenter).y
-                , buttonType == ButtonType.START ? 3 : 2
+                , buttonType == ButtonType.START ? .8f : .6f
                 , 1
                 , 0.6f
                 , ButtonType.defineBodyType(buttonType));
-        this.radius = buttonType == ButtonType.START ? 3 : 2;
+        this.radius = buttonType == ButtonType.START ? .8f : .6f;
         this.stage = stage;
         this.startX = calculatePositionByAngle(angle, distanceFromCenter).x;
         this.startY = calculatePositionByAngle(angle, distanceFromCenter).y;
         button = new Image(BaseStage.getTextureRegion(ButtonType.definePlanetTexturePath(buttonType)));
-        button.setSize((buttonType == ButtonType.START ? 3 : 2) * 2, (buttonType == ButtonType.START ? 3 : 2) * 2);
+        button.setSize((radius) * 2, (radius) * 2);
        
         button.addListener(new ClickListener() {
             @Override
@@ -195,6 +195,4 @@ public class MenuButton extends GravityBody {
         APPEARING,
         SIMULATING
     }
-
-
 }

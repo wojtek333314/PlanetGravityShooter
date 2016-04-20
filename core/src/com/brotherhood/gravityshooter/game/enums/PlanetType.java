@@ -30,7 +30,7 @@ public enum  PlanetType {
             case VENUS:
                 return 1f;
             case MARS:
-                return 1.5f;
+                return .2f;
             default:
                 return 1;
         }

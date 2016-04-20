@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,23 +25,28 @@ import java.util.HashMap;
  * Created by Wojciech Osak on 2015-12-06.
  */
 public class BaseStage extends Stage implements Screen, InputProcessor {
-    public static int W, H;
+    public static final float DIVIDER = 128;
+    public static final float MAIN_W = 1280f / DIVIDER;
+    public static final float MAIN_H = 720f / DIVIDER;
+    public static float W = Gdx.graphics.getWidth() / DIVIDER;
+    public static float H = Gdx.graphics.getHeight() / DIVIDER;
+    public static final float WR = MAIN_W / W; // po prostu stosunek szerokości domyślnego ekranu do aktualnego
+    public static final float HR = MAIN_H / H;
     private static HashMap<String, TextureRegion> textureRegionList = new HashMap<String, TextureRegion>();
     private static HashMap<FontKey, BitmapFont> fonts = new HashMap<FontKey, BitmapFont>();
-    protected Camera camera;
+    protected static OrthographicCamera camera;
     private InputMultiplexer inputMultiplexer;
     protected LabelActor FPScounterLabel;
     private DecimalFormat fpsTextFormat = new DecimalFormat("#.##");
 
     public BaseStage() {
-        W = Gdx.graphics.getWidth();
-        H = Gdx.graphics.getHeight();
-
         Gdx.input.setCatchBackKey(true);
         camera = new OrthographicCamera(W, H);
         camera.position.set(W / 2, H / 2, 0);
+        camera.update();
         getViewport().setCamera(camera);
-
+        W *= WR;
+        H *= HR;
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(this);
     }
@@ -165,17 +169,12 @@ public class BaseStage extends Stage implements Screen, InputProcessor {
             if (key.fontPath.equals(fontPath) && key.fontSize == size)
                 return fonts.get(key);
         }
-        float ratio = ((((float) Gdx.graphics.getWidth()) * size / 2500));
-
+        float ratio = ((camera.viewportWidth * size / 2500));
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(FontType.getFontPath(font)));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.color = new Color(1, 1, 1, 1);
         parameter.size = (int) (size * ratio);
-        parameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS
-                + "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
-                + "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ".toLowerCase()
-                + "ãáàâçéêíõóôúüáéíñóúü¿¡ąćęłńóśźżàâæçéèêëïîôœ€ÿüûùäöüß"
-                + "ãáàâçéêíõóôúüáéíñóúü¿¡ąćęłńóśźżàâæçéèêëïîôœ€ÿüûùäöüß".toUpperCase();
+        parameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS;
         BitmapFont ret = generator.generateFont(parameter); // font size 12 pixels
         generator.dispose(); // don't forget to dispose to avoid memory leaks!
         fonts.put(fontKey, ret);
@@ -200,11 +199,7 @@ public class BaseStage extends Stage implements Screen, InputProcessor {
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.color = Color.FIREBRICK;
         parameter.size = size * (Gdx.graphics.getWidth() / Gdx.graphics.getHeight());
-        parameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS
-                + "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
-                + "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ".toLowerCase()
-                + "ãáàâçéêíõóôúüáéíñóúü¿¡ąćęłńóśźżàâæçéèêëïîôœ€ÿüûùäöüß"
-                + "ãáàâçéêíõóôúüáéíñóúü¿¡ąćęłńóśźżàâæçéèêëïîôœ€ÿüûùäöüß".toUpperCase();
+        parameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS;
         BitmapFont ret = generator.generateFont(parameter); // font size 12 pixels
         generator.dispose(); // don't forget to dispose to avoid memory leaks!
         return ret;
@@ -335,7 +330,7 @@ public class BaseStage extends Stage implements Screen, InputProcessor {
      * Set multiplexer, this method should be called in stage started only in Launcher.
      * Other stages have this method after redirect.
      */
-    public void resetInputProcessor(){
+    public void resetInputProcessor() {
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
