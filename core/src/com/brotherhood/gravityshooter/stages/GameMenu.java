@@ -39,7 +39,8 @@ public class GameMenu extends PhysicsStage {
 
         resetInputProcessor();
 
-        label = new LabelActor(getFont(FontType.ROBOTO_MEDIUM, 1), "TEST");
+        label = new LabelActor(getFont(FontType.ROBOTO_MEDIUM, 12), "TEST");
+        label.setScale(.01f);
         addActor(label);
         label.setPosition(StagePosition.CENTER);
     }

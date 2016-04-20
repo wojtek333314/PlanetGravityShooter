@@ -13,13 +13,13 @@ public enum  PlanetType {
     public static float definePlanetMass(PlanetType planetType){
         switch (planetType){
             case EARTH:
-                return 1;
+                return .1f;
             case VENUS:
-                return 5;
+                return .5f;
             case MARS:
-                return 15;
+                return 8.85f;
             default:
-                return 1;
+                return .1f;
         }
     }
 
@@ -30,9 +30,9 @@ public enum  PlanetType {
             case VENUS:
                 return 1f;
             case MARS:
-                return .2f;
+                return 1.5f;
             default:
-                return 1;
+                return .1f;
         }
     }
 
